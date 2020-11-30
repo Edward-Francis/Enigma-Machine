@@ -16,6 +16,9 @@ class Rotor:
     def __init__(self, __type, position):
         self.type = __type
         self.position = position
+        wiring, turnovers = WHEELS[self.type]
+        self.wiring = list(wiring)
+        self.turnovers = list(turnovers)
 
 
 class Reflector:
