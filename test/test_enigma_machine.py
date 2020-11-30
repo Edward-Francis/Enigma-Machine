@@ -1,7 +1,7 @@
 import pytest
 
 import enigma_machine
-from enigma_machine import M3, Reflector, Rotor
+from enigma_machine import M3, REFLECTORS, WHEELS, Reflector, Rotor
 from enigma_machine.enigma_machine import fib
 
 
@@ -41,8 +41,36 @@ def test_rotor_initialisation(type, position, first, last) -> None:
     assert rotor.wiring[-1] == last
 
 
+@pytest.mark.parametrize("type", WHEELS.keys())
+def test_rotor_forward(type) -> None:
+    rotor = Rotor(type, "A")
+    alphabet, _ = WHEELS.get(type, ("", ""))
+    assert rotor.forward("A") == alphabet[0]
+    assert rotor.forward("Z") == alphabet[25]
+
+
+@pytest.mark.parametrize("type", WHEELS.keys())
+def test_rotor_reverse(type) -> None:
+    rotor = Rotor(type, "A")
+    alphabet = WHEELS.get(type, "")
+    assert rotor.reverse("A") == chr(alphabet[0].index("A") + 65)
+
+
 @pytest.mark.parametrize("type", ["B", "C"])
 def test_reflector_initialisation(type) -> None:
     reflector = Reflector(type)
     assert reflector.type == type
     assert reflector.wiring == list(enigma_machine.REFLECTORS[type])
+
+
+@pytest.mark.parametrize("type", REFLECTORS.keys())
+def test_reflector_reflect(type) -> None:
+    reflector = Reflector(type)
+    alphabet = REFLECTORS.get(type, "")
+    assert reflector.reflect("A") == alphabet[0]
+    assert reflector.reflect("Z") == alphabet[25]
+
+
+def test_m3_transform_string_locked() -> None:
+    m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B", locked=True)
+    assert m3.transform_string("hello") == "EHPPK"
