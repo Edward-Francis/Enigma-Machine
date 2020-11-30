@@ -1,4 +1,7 @@
-from enigma_machine import M3
+import pytest
+
+import enigma_machine
+from enigma_machine import M3, Reflector
 from enigma_machine.enigma_machine import fib
 
 
@@ -19,3 +22,10 @@ def test_m3_initialisation() -> None:
     assert m3.rotors[1].type == "II"
     assert m3.rotors[2].type == "III"
     assert m3.reflector.type == "B"
+
+
+@pytest.mark.parametrize("type", ["B", "C"])
+def test_reflector_initialisation(type):
+    reflector = Reflector(type)
+    assert reflector.type == type
+    assert reflector.wiring == list(enigma_machine.REFLECTORS[type])

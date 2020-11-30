@@ -21,6 +21,7 @@ class Rotor:
 class Reflector:
     def __init__(self, __type):
         self.type = __type
+        self.wiring = list(REFLECTORS[self.type])
 
 
 class M3:
