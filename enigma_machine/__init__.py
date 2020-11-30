@@ -10,3 +10,20 @@ WHEELS = {
 }
 
 REFLECTORS = {"B": "YRUHQSLDPXNGOKMIEBFZCWVJAT", "C": "FVPJIAOYEDRZXWGCTKUQSBNMHL"}
+
+
+class Rotor:
+    def __init__(self, __type, position):
+        self.type = __type
+        self.position = position
+
+
+class Reflector:
+    def __init__(self, __type):
+        self.type = __type
+
+
+class M3:
+    def __init__(self, *args, **kwargs) -> None:
+        self.reflector = Reflector(kwargs["reflector"])
+        self.rotors = [Rotor(*r) for r in kwargs["rotors"]]
