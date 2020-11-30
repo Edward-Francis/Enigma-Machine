@@ -20,6 +20,10 @@ class Rotor:
         self.wiring = list(wiring)
         self.turnovers = list(turnovers)
 
+        # reset rotor wiring to reflect starting position
+        offset = ord(position) - 65
+        self.wiring = self.wiring[offset:] + self.wiring[:offset]
+
 
 class Reflector:
     def __init__(self, __type):

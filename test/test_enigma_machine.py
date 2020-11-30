@@ -24,12 +24,21 @@ def test_m3_initialisation() -> None:
     assert m3.reflector.type == "B"
 
 
-@pytest.mark.parametrize("type", ["I", "II", "III"])
-def test_rotor_initialisation(type) -> None:
-    rotor = Rotor(type, "A")
+@pytest.mark.parametrize(
+    "type,position,first,last",
+    [
+        ("I", "A", "E", "J"),
+        ("I", "X", "R", "B"),
+        ("II", "R", "G", "Q"),
+        ("VII", "F", "R", "G"),
+    ],
+)
+def test_rotor_initialisation(type, position, first, last) -> None:
+    rotor = Rotor(type, position)
     assert rotor.type == type
-    assert rotor.wiring == list(enigma_machine.WHEELS[type][0])
     assert rotor.turnovers == list(enigma_machine.WHEELS[type][1])
+    assert rotor.wiring[0] == first
+    assert rotor.wiring[-1] == last
 
 
 @pytest.mark.parametrize("type", ["B", "C"])
