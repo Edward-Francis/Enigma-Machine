@@ -74,3 +74,13 @@ def test_reflector_reflect(type) -> None:
 def test_m3_transform_string_locked() -> None:
     m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B", locked=True)
     assert m3.transform_string("hello") == "EHPPK"
+
+
+def test_m3_transform_string_basic() -> None:
+    m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
+    assert m3.transform_string("hello") == "MFNCZ"
+
+
+def test_m3_transform_string_basic2() -> None:
+    m3 = M3(rotors=(("I", "H"), ("II", "A"), ("III", "A")), reflector="B")
+    assert m3.transform_string("E") == "K"
