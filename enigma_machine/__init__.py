@@ -1,3 +1,5 @@
+from typing import List
+
 WHEELS = {
     "I": ("EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q"),
     "II": ("AJDKSIRUXBLHWTMCQGZNPYFVOE", "E"),
@@ -35,27 +37,17 @@ class Rotor:
             value = value - 26
         return chr(self.wiring.index(chr(value)) + 65)
 
-    def step(self) -> bool:
+    def step(self) -> None:
 
         self.wiring = self.wiring[1:] + [self.wiring[0]]
         self.count = self.count + 1
 
-        print("Stepping rotor: " + self.type + " - " + str(self.count))
-
         if self.count > 26:
             self.count = 1
 
-        # import string
-        # alphabet = list(string.ascii_uppercase)
-        # print(alphabet[self.count:] + alphabet[:self.count-1])
-
-        # print(chr(65 + self.count -1 ))
-        # print(self.wiring)
-
-        if chr(65 + self.count - 1) in self.turnovers:
-            return True
-        else:
-            return False
+    def rotor_position(self) -> str:
+        """Returns the rotor's current position."""
+        return chr(self.count + 65)
 
 
 class Reflector:
@@ -76,64 +68,22 @@ class M3:
     def transform_string(self, msg: str) -> str:
         return "".join([self.transform_character(c) for c in msg.upper()])
 
-    def transform_character(self, c: str) -> str:
+    def rotor_positions(self) -> List[str]:
+        """Return the rotors current positions."""
+        return [r.rotor_position() for r in self.rotors]
 
-        print("----------- " + c + " ---------------")
+    def transform_character(self, c: str) -> str:
 
         r1 = self.rotors[0]
         r2 = self.rotors[1]
         r3 = self.rotors[2]
 
-        # perform rotor stepping
         if not self.locked:
-            if r1.step():
-                if r2.step():
-                    r3.step()
+            r1.step()
+            if chr(r1.count + 64) in r1.turnovers:
+                r2.step()
+            elif r2.rotor_position() in r2.turnovers:
+                r2.step()
+                r3.step()
 
-        # print(r1.count)
-        # print(r2.count)
-        # print(r3.count)
-
-        print("r1 in: " + c)
-        c = r1.forward(c)
-        print("r1 out: " + c)
-
-        p = ord(c) - r1.count
-        print("p: " + str(p))
-        if p < 65:
-            p = p + 26
-        c = chr(p)
-
-        print("r2 in: " + c)
-        c = r2.forward(c)
-        print("r2 out: " + c)
-
-        p = ord(c) - r2.count
-        if p < 65:
-            p = p + 26
-        c = chr(p)
-
-        c = r3.forward(c)
-        print("r3 out: " + c)
-
-        p = ord(c) - r3.count
-        if p < 65:
-            p = p + 26
-        c = chr(p)
-        print("reflector in: " + c)
-        c = self.reflector.reflect(c)
-        print("reflector out: " + c)
-
-        print("> r3 in: " + c)
-        c = r3.reverse(c)
-        print("> r3 out: " + c)
-
-        print("> r2 in: " + c)
-        c = r2.reverse(c)
-        print("> r2 out: " + c)
-
-        print("> r1 in: " + c)
-        c = r1.reverse(c)
-        print("> r1 out: " + c)
-
-        return c
+        return "A"
