@@ -27,23 +27,12 @@ class Rotor:
         offset = ord(position) - 65
         self.wiring = self.wiring[offset:] + self.wiring[:offset]
 
-    def forward(self, char):
-        return self.wiring[ord(char) - 65]
-
-    def reverse(self, char):
-        """"""
-        value = ord(char) + self.count
-        if value > 90:
-            value = value - 26
-        return chr(self.wiring.index(chr(value)) + 65)
-
     def step(self) -> None:
-
+        """"""
         self.wiring = self.wiring[1:] + [self.wiring[0]]
         self.count = self.count + 1
-
-        if self.count > 26:
-            self.count = 1
+        if self.count > 25:
+            self.count = 0
 
     def rotor_position(self) -> str:
         """Returns the rotor's current position."""

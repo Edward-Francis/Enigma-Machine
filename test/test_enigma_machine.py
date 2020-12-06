@@ -1,7 +1,9 @@
+import string
+
 import pytest
 
 import enigma_machine
-from enigma_machine import M3, REFLECTORS, WHEELS, Reflector, Rotor
+from enigma_machine import M3, REFLECTORS, Reflector, Rotor
 from enigma_machine.enigma_machine import fib
 
 
@@ -41,19 +43,13 @@ def test_rotor_initialisation(type, position, first, last) -> None:
     assert rotor.wiring[-1] == last
 
 
-@pytest.mark.parametrize("type", WHEELS.keys())
-def test_rotor_forward(type) -> None:
-    rotor = Rotor(type, "A")
-    alphabet, _ = WHEELS.get(type, ("", ""))
-    assert rotor.forward("A") == alphabet[0]
-    assert rotor.forward("Z") == alphabet[25]
-
-
-@pytest.mark.parametrize("type", WHEELS.keys())
-def test_rotor_reverse(type) -> None:
-    rotor = Rotor(type, "A")
-    alphabet = WHEELS.get(type, "")
-    assert rotor.reverse("A") == chr(alphabet[0].index("A") + 65)
+def test_rotor_stepping() -> None:
+    rotor = Rotor("I", "A")
+    alphabet = list(string.ascii_uppercase)
+    for _ in range(3):
+        for letter in alphabet:
+            assert rotor.rotor_position() == letter
+            rotor.step()
 
 
 @pytest.mark.parametrize("type", ["B", "C"])
@@ -102,3 +98,8 @@ def test_m3_stepping_double() -> None:
     assert m3.rotor_positions() == ["X", "F", "B"]
     m3.transform_character("A")
     assert m3.rotor_positions() == ["Y", "F", "B"]
+
+
+def test_m3_transform_string() -> None:
+    m3 = M3(rotors=(("III", "U"), ("II", "A"), ("I", "A")), reflector="B")
+    assert m3.transform_string("XYZ") == "AAA"
