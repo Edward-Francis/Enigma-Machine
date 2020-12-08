@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 WHEELS = {
     "I": ("EKMFLGDQVZNTOWYHXUSPAIBRCJ", "Q"),
@@ -38,14 +38,18 @@ class Rotor:
         """Returns the rotor's current position."""
         return chr(self.count + 65)
 
+    def forward(self, char, offset) -> Tuple[str, int]:
+        """"""
+        return (self.wiring[ord(char) - 65 - offset], self.count)
+
 
 class Reflector:
     def __init__(self, __type):
         self.type = __type
         self.wiring = list(REFLECTORS[self.type])
 
-    def reflect(self, char):
-        return self.wiring[ord(char) - 65]
+    def reflect(self, char: str, offset: int) -> str:
+        return self.wiring[ord(char) - 65 - offset]
 
 
 class M3:
@@ -62,7 +66,7 @@ class M3:
         return [r.rotor_position() for r in self.rotors]
 
     def transform_character(self, c: str) -> str:
-
+        # print("--- " + c + " ---")
         r1 = self.rotors[0]
         r2 = self.rotors[1]
         r3 = self.rotors[2]
@@ -75,4 +79,45 @@ class M3:
                 r2.step()
                 r3.step()
 
-        return "A"
+        # print("r1 count: " + str(r1.count))
+        # print("r2 count: " + str(r2.count))
+        # print("r3 count: " + str(r3.count))
+
+        offset = 0
+        char = c
+
+        for r in self.rotors:
+            char, offset = r.forward(char, offset)
+        char = self.reflector.reflect(char, offset)
+
+        c = char
+        import string
+
+        alphabet = list(string.ascii_uppercase)
+        # r3
+
+        r3_alphabet = alphabet[r3.count :] + alphabet[: r3.count]
+        foo = r3_alphabet[ord(c) - 65]
+        c = r3_alphabet[r3.wiring.index(foo)]
+
+        # print("r3 reverse out: " + c)
+
+        r2_alphabet = alphabet[r2.count :] + alphabet[: r2.count]
+        foo = r2_alphabet[ord(c) - 65 - r3.count]
+        c = r2_alphabet[r2.wiring.index(foo)]
+
+        # print("r2 reverse out: " + c)
+
+        r1_alphabet = alphabet[r1.count :] + alphabet[: r1.count]
+        foo = r1_alphabet[ord(c) - 65 - r2.count]
+        c = r1_alphabet[r1.wiring.index(foo)]
+
+        # print("r1 reverse out: " + c)
+
+        # print(c)
+        # print(r1.count)
+
+        x = chr((ord(c) - 65 - r1.count) % 26 + 65)
+        # print(x)
+
+        return x
