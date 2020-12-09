@@ -52,6 +52,18 @@ def test_rotor_stepping() -> None:
             rotor.step()
 
 
+def test_rotor_forward() -> None:
+    assert Rotor("I", "A").forward("A", 0) == ("E", 0)
+    assert Rotor("I", "A").forward("B", 0) == ("K", 0)
+    assert Rotor("I", "A").forward("Z", 0) == ("J", 0)
+    assert Rotor("I", "B").forward("A", 0) == ("K", 1)
+    assert Rotor("I", "B").forward("Z", 0) == ("E", 1)
+    assert Rotor("I", "G").forward("R", 3) == ("A", 6)
+    assert Rotor("I", "G").forward("O", 3) == ("U", 6)
+    assert Rotor("I", "Z").forward("A", 25) == ("E", 25)
+    assert Rotor("I", "Z").forward("Z", 25) == ("J", 25)
+
+
 @pytest.mark.parametrize("type", REFLECTORS.keys())
 def test_reflector_initialisation(type) -> None:
     reflector = Reflector(type)
