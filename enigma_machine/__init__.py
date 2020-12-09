@@ -66,7 +66,7 @@ class M3:
         """Return the rotors current positions."""
         return [r.rotor_position() for r in self.rotors]
 
-    def transform_character(self, c: str) -> str:
+    def transform_character(self, char: str) -> str:
         """"""
 
         r1 = self.rotors[0]
@@ -82,30 +82,26 @@ class M3:
                 r3.step()
 
         offset = 0
-        char = c
 
         for r in self.rotors:
             char, offset = r.forward(char, offset)
         char = self.reflector.reflect(char, offset)
 
-        c = char
         import string
 
         alphabet = list(string.ascii_uppercase)
         # r3
 
         r3_alphabet = alphabet[r3.count :] + alphabet[: r3.count]
-        foo = r3_alphabet[ord(c) - 65]
-        c = r3_alphabet[r3.wiring.index(foo)]
+        foo = r3_alphabet[ord(char) - 65]
+        char = r3_alphabet[r3.wiring.index(foo)]
 
         r2_alphabet = alphabet[r2.count :] + alphabet[: r2.count]
-        foo = r2_alphabet[ord(c) - 65 - r3.count]
-        c = r2_alphabet[r2.wiring.index(foo)]
+        foo = r2_alphabet[ord(char) - 65 - r3.count]
+        char = r2_alphabet[r2.wiring.index(foo)]
 
         r1_alphabet = alphabet[r1.count :] + alphabet[: r1.count]
-        foo = r1_alphabet[ord(c) - 65 - r2.count]
-        c = r1_alphabet[r1.wiring.index(foo)]
+        foo = r1_alphabet[ord(char) - 65 - r2.count]
+        char = r1_alphabet[r1.wiring.index(foo)]
 
-        x = chr((ord(c) - 65 - r1.count) % 26 + 65)
-
-        return x
+        return chr((ord(char) - 65 - r1.count) % 26 + 65)
