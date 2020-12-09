@@ -39,7 +39,7 @@ class Rotor:
         return chr(self.count + 65)
 
     def forward(self, char, offset) -> Tuple[str, int]:
-        """"""
+        """Calculates and returns the transposed character."""
         return (self.wiring[ord(char) - 65 - offset], self.count)
 
 
@@ -49,6 +49,7 @@ class Reflector:
         self.wiring = list(REFLECTORS[self.type])
 
     def reflect(self, char: str, offset: int) -> str:
+        """Calculates and returns the inverted input character."""
         return self.wiring[ord(char) - 65 - offset]
 
 
