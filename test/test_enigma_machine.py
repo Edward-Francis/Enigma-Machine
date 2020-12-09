@@ -133,3 +133,11 @@ def test_m3_transform_string_basic() -> None:
 def test_m3_transform_string_stepping_double() -> None:
     m3 = M3(rotors=(("III", "U"), ("II", "D"), ("I", "A")), reflector="B")
     assert m3.transform_string("HELLO") == "IBXXX"
+
+
+def test_m3_transform_string_long() -> None:
+    m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
+    input = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    output = "ftzmgisxipjwgdnjjcoqtyrigdmxfiesrwzgtoiuiekkdcshtpyoepvxnhvrwwesfruxdgwozdmnkizwnczducobltuyhdzgovbuypkojwbowseemtzfwygkodtbzdqrczcifdidxcqzookviiomllegmsojxhnfhbofdzctzqpowvomqnwqquozufmsdxmjxiyzkozdewgedjxsmyhkjkriqxwbitwlyusthzqmgtxxwihdobtkcgzuvekyekyrewlywfmhlqjqjwcvtksnhzegwzkvexktdzxlchryjqqdzhyypzorygfkkkgufdcutkrjqgzwjdlmtyyigdoxoigqdwqgouyupewdwcingpdobrkxtjlkqjsrbimxvgzmebfzklowxuktdfnfnyyyowzyjworigokhhlngbpuyxfdcqlpxschhsljlsyfslcmmbknglvkwvqvdjgoiquuhqxokdpicpeycmhkokedzdtjvsyekpowmcrzgrvfwgfekewtpmztvbxmkiihhhmyxjnjvjillvqbxeqyhomtnzrfdbstekfirqhyoizdmbtsverbnhjpijoufljtnulrzzcbwswexnrhfgkjludpxzjiqtlnzfkylrugebhruksygqkprclkyqbpbhdvlosrzfbrungqydwsleymypsnrwmhyrglvruptfupucneomqhbecbnjxvzfsqmzbusefxwfcpliprqlkpmumkhvkboxbkunixhbhdvqgdpjgjcsc".upper()
+    assert m3.transform_string(input) == output
+    assert 1 == 1
