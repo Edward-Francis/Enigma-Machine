@@ -40,8 +40,16 @@ class Rotor:
         return chr(self.count + 65)
 
     def forward(self, char, offset) -> Tuple[str, int]:
-        """Calculates and returns the transposed character."""
+        """Calculates and returns the transposed character moving forwards."""
         return (self.wiring[ord(char) - 65 - offset], self.count)
+
+    def reverse(self, char, offset) -> Tuple[str, int]:
+        """Calculates and returns the transposed character moving backwards."""
+        alphabet = list(string.ascii_uppercase)
+        r_alphabet = alphabet[self.count :] + alphabet[: self.count]
+        foo = r_alphabet[ord(char) - 65 - offset]
+        char = r_alphabet[self.wiring.index(foo)]
+        return char, self.count
 
 
 class Reflector:
@@ -83,7 +91,6 @@ class M3:
                 r3.step()
 
         offset = 0
-        alphabet = list(string.ascii_uppercase)
 
         for r in self.rotors:
             char, offset = r.forward(char, offset)
@@ -93,9 +100,6 @@ class M3:
         offset = 0
 
         for r in reversed(self.rotors):
-            r_alphabet = alphabet[r.count :] + alphabet[: r.count]
-            foo = r_alphabet[ord(char) - 65 - offset]
-            offset = r.count
-            char = r_alphabet[r.wiring.index(foo)]
+            char, offset = r.reverse(char, offset)
 
         return chr((ord(char) - 65 - offset) % 26 + 65)
