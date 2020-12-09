@@ -1,3 +1,4 @@
+import string
 from typing import List, Tuple
 
 WHEELS = {
@@ -82,26 +83,19 @@ class M3:
                 r3.step()
 
         offset = 0
+        alphabet = list(string.ascii_uppercase)
 
         for r in self.rotors:
             char, offset = r.forward(char, offset)
+
+        # fixme reflector can possibly become a custom rotor object
         char = self.reflector.reflect(char, offset)
+        offset = 0
 
-        import string
+        for r in reversed(self.rotors):
+            r_alphabet = alphabet[r.count :] + alphabet[: r.count]
+            foo = r_alphabet[ord(char) - 65 - offset]
+            offset = r.count
+            char = r_alphabet[r.wiring.index(foo)]
 
-        alphabet = list(string.ascii_uppercase)
-        # r3
-
-        r3_alphabet = alphabet[r3.count :] + alphabet[: r3.count]
-        foo = r3_alphabet[ord(char) - 65]
-        char = r3_alphabet[r3.wiring.index(foo)]
-
-        r2_alphabet = alphabet[r2.count :] + alphabet[: r2.count]
-        foo = r2_alphabet[ord(char) - 65 - r3.count]
-        char = r2_alphabet[r2.wiring.index(foo)]
-
-        r1_alphabet = alphabet[r1.count :] + alphabet[: r1.count]
-        foo = r1_alphabet[ord(char) - 65 - r2.count]
-        char = r1_alphabet[r1.wiring.index(foo)]
-
-        return chr((ord(char) - 65 - r1.count) % 26 + 65)
+        return chr((ord(char) - 65 - offset) % 26 + 65)
