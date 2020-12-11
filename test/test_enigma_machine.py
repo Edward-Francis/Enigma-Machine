@@ -41,6 +41,7 @@ def test_rotor_initialisation(type, position, first, last) -> None:
     assert rotor.turnovers == list(enigma_machine.WHEELS[type][1])
     assert rotor.wiring[0] == first
     assert rotor.wiring[-1] == last
+    assert rotor.alphabet[0] == string.ascii_uppercase[ord(position) - 65]
 
 
 def test_rotor_stepping() -> None:
@@ -81,6 +82,7 @@ def test_reflector_initialisation(type) -> None:
     reflector = Reflector(type)
     assert reflector.type == type
     assert reflector.wiring == list(enigma_machine.REFLECTORS[type])
+    assert reflector.count == 0
 
 
 @pytest.mark.parametrize("type", REFLECTORS.keys())
