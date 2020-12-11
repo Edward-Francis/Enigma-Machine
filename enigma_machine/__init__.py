@@ -20,18 +20,19 @@ class Rotor:
         self.type = __type
         self.position = position
         wiring, turnovers = WHEELS[self.type]
+        self.alphabet = list(string.ascii_uppercase)
         self.wiring = list(wiring)
         self.turnovers = list(turnovers)
-        self.count = ord(position) - 65
-
-        # reset rotor wiring to reflect starting position
         offset = ord(position) - 65
+        self.count = offset
+        self.alphabet = self.alphabet[offset:] + self.alphabet[:offset]
         self.wiring = self.wiring[offset:] + self.wiring[:offset]
 
-    def step(self) -> None:
-        """"""
-        self.wiring = self.wiring[1:] + [self.wiring[0]]
-        self.count = self.count + 1
+    def step(self, offset=1) -> None:
+        """Moves rotors to new position."""
+        self.alphabet = self.alphabet[offset:] + [self.alphabet[0]]
+        self.wiring = self.wiring[offset:] + [self.wiring[0]]
+        self.count = self.count + offset
         if self.count > 25:
             self.count = 0
 
@@ -45,10 +46,8 @@ class Rotor:
 
     def reverse(self, char, offset) -> Tuple[str, int]:
         """Calculates and returns the transposed character moving backwards."""
-        alphabet = list(string.ascii_uppercase)
-        r_alphabet = alphabet[self.count :] + alphabet[: self.count]
-        foo = r_alphabet[ord(char) - 65 - offset]
-        char = r_alphabet[self.wiring.index(foo)]
+        position = self.alphabet[ord(char) - 65 - offset]
+        char = self.alphabet[self.wiring.index(position)]
         return char, self.count
 
 
