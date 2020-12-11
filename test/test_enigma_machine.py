@@ -116,6 +116,11 @@ def test_m3_stepping_double() -> None:
     assert m3.rotor_positions() == ["Y", "F", "B"]
 
 
+def test_m3_transform_string_locked() -> None:
+    m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B", locked=True)
+    assert m3.transform_string("HELLO") == "EHPPK"
+
+
 def test_m3_transform_string_basic() -> None:
     m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
     assert m3.transform_string("HELLO") == "MFNCZ"
