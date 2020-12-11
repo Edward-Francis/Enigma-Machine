@@ -88,8 +88,8 @@ def test_reflector_reflect(type) -> None:
     reflector = Reflector(type)
     alphabet = REFLECTORS[type]
     for i in range(26):
-        assert reflector.reflect("A", i) == alphabet[(26 - i) % 26]
-        assert reflector.reflect("Z", i) == alphabet[25 - i]
+        assert reflector.forward("A", i) == (alphabet[(26 - i) % 26], 0)
+        assert reflector.forward("Z", i) == (alphabet[25 - i], 0)
 
 
 def test_m3_stepping_locked() -> None:

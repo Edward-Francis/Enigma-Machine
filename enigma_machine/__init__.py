@@ -51,14 +51,11 @@ class Rotor:
         return char, self.count
 
 
-class Reflector:
+class Reflector(Rotor):
     def __init__(self, __type):
         self.type = __type
         self.wiring = list(REFLECTORS[self.type])
-
-    def reflect(self, char: str, offset: int) -> str:
-        """Calculates and returns the inverted input character."""
-        return self.wiring[ord(char) - 65 - offset]
+        self.count = 0
 
 
 class M3:
@@ -76,12 +73,8 @@ class M3:
 
     def transform_character(self, char: str) -> str:
         """"""
-
-        r1 = self.rotors[0]
-        r2 = self.rotors[1]
-        r3 = self.rotors[2]
-
         if not self.locked:
+            r1, r2, r3 = self.rotors
             r1.step()
             if chr(r1.count + 64) in r1.turnovers:
                 r2.step()
@@ -91,13 +84,8 @@ class M3:
 
         offset = 0
 
-        for r in self.rotors:
+        for r in (*self.rotors, self.reflector):
             char, offset = r.forward(char, offset)
-
-        # fixme reflector can possibly become a custom rotor object
-        char = self.reflector.reflect(char, offset)
-        offset = 0
-
         for r in reversed(self.rotors):
             char, offset = r.reverse(char, offset)
 
