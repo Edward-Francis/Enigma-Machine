@@ -63,8 +63,12 @@ class Reflector(Rotor):
 
 
 class Plugboard:
-    def __init__(self, map={}) -> None:
-        self.map = map
+    def __init__(self, _map={}) -> None:
+
+        if len(_map) > 13:
+            raise InputException("Exceeds 13 maximum plugboard connections.")
+
+        self.map = _map
         self.inv_map = {v: k for k, v in self.map.items()}
 
     def forward(self, char) -> str:
