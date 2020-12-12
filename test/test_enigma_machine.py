@@ -3,7 +3,7 @@ import string
 import pytest
 
 import enigma_machine
-from enigma_machine import M3, REFLECTORS, Reflector, Rotor
+from enigma_machine import M3, REFLECTORS, InputException, Reflector, Rotor
 
 
 def test_m3_initialisation() -> None:
@@ -137,3 +137,9 @@ def test_m3_transform_string_long() -> None:
     output = "ftzmgisxipjwgdnjjcoqtyrigdmxfiesrwzgtoiuiekkdcshtpyoepvxnhvrwwesfruxdgwozdmnkizwnczducobltuyhdzgovbuypkojwbowseemtzfwygkodtbzdqrczcifdidxcqzookviiomllegmsojxhnfhbofdzctzqpowvomqnwqquozufmsdxmjxiyzkozdewgedjxsmyhkjkriqxwbitwlyusthzqmgtxxwihdobtkcgzuvekyekyrewlywfmhlqjqjwcvtksnhzegwzkvexktdzxlchryjqqdzhyypzorygfkkkgufdcutkrjqgzwjdlmtyyigdoxoigqdwqgouyupewdwcingpdobrkxtjlkqjsrbimxvgzmebfzklowxuktdfnfnyyyowzyjworigokhhlngbpuyxfdcqlpxschhsljlsyfslcmmbknglvkwvqvdjgoiquuhqxokdpicpeycmhkokedzdtjvsyekpowmcrzgrvfwgfekewtpmztvbxmkiihhhmyxjnjvjillvqbxeqyhomtnzrfdbstekfirqhyoizdmbtsverbnhjpijoufljtnulrzzcbwswexnrhfgkjludpxzjiqtlnzfkylrugebhruksygqkprclkyqbpbhdvlosrzfbrungqydwsleymypsnrwmhyrglvruptfupucneomqhbecbnjxvzfsqmzbusefxwfcpliprqlkpmumkhvkboxbkunixhbhdvqgdpjgjcsc".upper()
     assert m3.transform_string(input) == output
     assert 1 == 1
+
+
+def test_m3_transform_invalid_character() -> None:
+    with pytest.raises(InputException, match=r"Input must be between A-Z"):
+        m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
+        m3.transform_character("[")

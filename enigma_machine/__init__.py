@@ -15,6 +15,10 @@ WHEELS = {
 REFLECTORS = {"B": "YRUHQSLDPXNGOKMIEBFZCWVJAT", "C": "FVPJIAOYEDRZXWGCTKUQSBNMHL"}
 
 
+class InputException(Exception):
+    pass
+
+
 class Rotor:
     def __init__(self, __type, position):
         self.type = __type
@@ -65,14 +69,19 @@ class M3:
         self.locked = kwargs.get("locked")
 
     def transform_string(self, msg: str) -> str:
-        return "".join([self.transform_character(c) for c in msg.upper()])
+        """Returns the enigma encoded string."""
+        return "".join([self.transform_character(c) for c in msg])
 
     def rotor_positions(self) -> List[str]:
         """Return the rotors current positions."""
         return [r.rotor_position() for r in self.rotors]
 
     def transform_character(self, char: str) -> str:
-        """"""
+        """Returns the enigma encoded character."""
+
+        if char not in string.ascii_uppercase:
+            raise InputException("Input must be between A-Z")
+
         if not self.locked:
             r1, r2, r3 = self.rotors
             r1.step()
