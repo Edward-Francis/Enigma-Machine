@@ -62,6 +62,12 @@ class Reflector(Rotor):
         self.count = 0
 
 
+class Plugboard:
+    def __init__(self, map={}) -> None:
+        self.map = map
+        self.inv_map = {v: k for k, v in self.map.items()}
+
+
 class M3:
     def __init__(self, *args, **kwargs) -> None:
         self.reflector = Reflector(kwargs["reflector"])

@@ -3,7 +3,7 @@ import string
 import pytest
 
 import enigma_machine
-from enigma_machine import M3, REFLECTORS, InputException, Reflector, Rotor
+from enigma_machine import M3, REFLECTORS, InputException, Plugboard, Reflector, Rotor
 
 
 def test_m3_initialisation() -> None:
@@ -81,6 +81,14 @@ def test_reflector_reflect(type) -> None:
     for i in range(26):
         assert reflector.forward("A", i) == (alphabet[(26 - i) % 26], 0)
         assert reflector.forward("Z", i) == (alphabet[25 - i], 0)
+
+
+def test_plugboard_initialisation() -> None:
+    pb = Plugboard({"A": "B", "C": "D"})
+    assert pb.map["A"] == "B"
+    assert pb.map["C"] == "D"
+    assert pb.inv_map["B"] == "A"
+    assert pb.inv_map["D"] == "C"
 
 
 def test_m3_stepping_locked() -> None:
