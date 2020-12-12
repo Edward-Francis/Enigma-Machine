@@ -95,6 +95,7 @@ class M3:
         self.reflector = Reflector(kwargs["reflector"])
         self.rotors = [Rotor(*r) for r in kwargs["rotors"]]
         self.locked = kwargs.get("locked")
+        self.plugboard = Plugboard(kwargs.get("plugboard", {}))
 
     def transform_string(self, msg: str) -> str:
         """Returns the enigma encoded string."""

@@ -13,6 +13,8 @@ def test_m3_initialisation() -> None:
     assert m3.rotors[1].type == "II"
     assert m3.rotors[2].type == "III"
     assert m3.reflector.type == "B"
+    assert m3.plugboard.map == {}
+    assert m3.plugboard.inv_map == {}
 
 
 @pytest.mark.parametrize(
