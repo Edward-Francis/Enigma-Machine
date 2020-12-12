@@ -1,4 +1,4 @@
-import string
+from string import ascii_uppercase
 from typing import List, Tuple
 
 WHEELS = {
@@ -24,7 +24,7 @@ class Rotor:
         self.type = __type
         self.position = position
         wiring, turnovers = WHEELS[self.type]
-        self.alphabet = list(string.ascii_uppercase)
+        self.alphabet = list(ascii_uppercase)
         self.wiring = list(wiring)
         self.turnovers = list(turnovers)
         offset = ord(position) - 65
@@ -64,9 +64,19 @@ class Reflector(Rotor):
 
 class Plugboard:
     def __init__(self, _map={}) -> None:
+        used_characters = []
 
         if len(_map) > 13:
             raise InputException("Exceeds 13 maximum plugboard connections.")
+
+        for k, v in _map.items():
+            if k not in ascii_uppercase or v not in ascii_uppercase:
+                raise InputException("Plugboard connections must be between A-Z.")
+            if k in used_characters or v in used_characters:
+                raise InputException("Plugboard connections repeated.")
+            else:
+                used_characters.append(k)
+                used_characters.append(v)
 
         self.map = _map
         self.inv_map = {v: k for k, v in self.map.items()}
@@ -97,7 +107,7 @@ class M3:
     def transform_character(self, char: str) -> str:
         """Returns the enigma encoded character."""
 
-        if char not in string.ascii_uppercase:
+        if char not in ascii_uppercase:
             raise InputException("Input must be between A-Z")
 
         if not self.locked:

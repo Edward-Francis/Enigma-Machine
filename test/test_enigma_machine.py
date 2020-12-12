@@ -109,6 +109,18 @@ def test_plugboard_maximum_connections() -> None:
         Plugboard(list(zip(alphabet, reversed(alphabet))))
 
 
+def test_plugboard_invalid_characters() -> None:
+    with pytest.raises(
+        InputException, match=r"Plugboard connections must be between A-Z."
+    ):
+        Plugboard({"A": "]"})
+
+
+def test_plugboard_repeated_characters() -> None:
+    with pytest.raises(InputException, match=r"Plugboard connections repeated."):
+        Plugboard({"A": "B", "B": "C"})
+
+
 def test_m3_stepping_locked() -> None:
     m3 = M3(rotors=(("III", "U"), ("II", "A"), ("I", "A")), reflector="B", locked=True)
     assert m3.rotor_positions() == ["U", "A", "A"]
