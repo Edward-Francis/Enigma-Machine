@@ -91,6 +91,16 @@ def test_plugboard_initialisation() -> None:
     assert pb.inv_map["D"] == "C"
 
 
+def test_plugboard_forward() -> None:
+    pb = Plugboard({"A": "B"})
+    assert pb.forward("A") == "B"
+
+
+def test_plugboard_reverse() -> None:
+    pb = Plugboard({"A": "B"})
+    assert pb.reverse("B") == "A"
+
+
 def test_m3_stepping_locked() -> None:
     m3 = M3(rotors=(("III", "U"), ("II", "A"), ("I", "A")), reflector="B", locked=True)
     assert m3.rotor_positions() == ["U", "A", "A"]

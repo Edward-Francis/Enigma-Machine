@@ -67,6 +67,14 @@ class Plugboard:
         self.map = map
         self.inv_map = {v: k for k, v in self.map.items()}
 
+    def forward(self, char) -> str:
+        """Calculates and returns the transposed character moving forwards."""
+        return self.map[char]
+
+    def reverse(self, char) -> str:
+        """Calculates and returns the transposed character moving backwards."""
+        return self.inv_map[char]
+
 
 class M3:
     def __init__(self, *args, **kwargs) -> None:
