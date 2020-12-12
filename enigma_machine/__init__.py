@@ -78,16 +78,12 @@ class Plugboard:
                 used_characters.append(k)
                 used_characters.append(v)
 
-        self.map = _map
-        self.inv_map = {v: k for k, v in self.map.items()}
+        inv_map = {v: k for k, v in _map.items()}
+        self.map = {**inv_map, **_map}
 
-    def forward(self, char) -> str:
-        """Calculates and returns the transposed character moving forwards."""
-        return self.map[char]
-
-    def reverse(self, char) -> str:
-        """Calculates and returns the transposed character moving backwards."""
-        return self.inv_map[char]
+    def map_character(self, char) -> str:
+        """Calculates and returns the transposed character."""
+        return self.map.get(char, char)
 
 
 class M3:
@@ -111,6 +107,8 @@ class M3:
         if char not in ascii_uppercase:
             raise InputException("Input must be between A-Z")
 
+        char = self.plugboard.map_character(char)
+
         if not self.locked:
             r1, r2, r3 = self.rotors
             r1.step()
@@ -127,4 +125,5 @@ class M3:
         for r in reversed(self.rotors):
             char, offset = r.reverse(char, offset)
 
-        return chr((ord(char) - 65 - offset) % 26 + 65)
+        char = chr((ord(char) - 65 - offset) % 26 + 65)
+        return self.plugboard.map_character(char)

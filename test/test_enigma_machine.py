@@ -14,7 +14,6 @@ def test_m3_initialisation() -> None:
     assert m3.rotors[2].type == "III"
     assert m3.reflector.type == "B"
     assert m3.plugboard.map == {}
-    assert m3.plugboard.inv_map == {}
 
 
 @pytest.mark.parametrize(
@@ -89,18 +88,14 @@ def test_plugboard_initialisation() -> None:
     pb = Plugboard({"A": "B", "C": "D"})
     assert pb.map["A"] == "B"
     assert pb.map["C"] == "D"
-    assert pb.inv_map["B"] == "A"
-    assert pb.inv_map["D"] == "C"
+    assert pb.map["B"] == "A"
+    assert pb.map["D"] == "C"
 
 
-def test_plugboard_forward() -> None:
+def test_plugboard_map_character() -> None:
     pb = Plugboard({"A": "B"})
-    assert pb.forward("A") == "B"
-
-
-def test_plugboard_reverse() -> None:
-    pb = Plugboard({"A": "B"})
-    assert pb.reverse("B") == "A"
+    assert pb.map_character("A") == "B"
+    assert pb.map_character("B") == "A"
 
 
 def test_plugboard_maximum_connections() -> None:
@@ -183,3 +178,13 @@ def test_m3_transform_invalid_character() -> None:
     with pytest.raises(InputException, match=r"Input must be between A-Z"):
         m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
         m3.transform_character("[")
+
+
+def test_m3_transform_string_locked_plugboard() -> None:
+    m3 = M3(
+        rotors=(("I", "A"), ("II", "A"), ("III", "A")),
+        reflector="B",
+        locked=True,
+        plugboard={"H": "I", "E": "F", "L": "M", "O": "P"},
+    )
+    assert m3.transform_string("HELLOB") == "RBWWME"
