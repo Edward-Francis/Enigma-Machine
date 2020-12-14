@@ -1,19 +1,9 @@
-import string
+from string import ascii_uppercase
 
 import pytest
 
 import enigma_machine
 from enigma_machine import M3, REFLECTORS, InputException, Plugboard, Reflector, Rotor
-
-
-def test_m3_initialisation() -> None:
-    m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
-    assert len(m3.rotors) == 3
-    assert m3.rotors[0].type == "I"
-    assert m3.rotors[1].type == "II"
-    assert m3.rotors[2].type == "III"
-    assert m3.reflector.type == "B"
-    assert m3.plugboard.map == {}
 
 
 @pytest.mark.parametrize(
@@ -31,12 +21,12 @@ def test_rotor_initialisation(type, position, first, last) -> None:
     assert rotor.turnovers == list(enigma_machine.WHEELS[type][1])
     assert rotor.wiring[0] == first
     assert rotor.wiring[-1] == last
-    assert rotor.alphabet[0] == string.ascii_uppercase[ord(position) - 65]
+    assert rotor.alphabet[0] == ascii_uppercase[ord(position) - 65]
 
 
 def test_rotor_stepping() -> None:
     rotor = Rotor("I", "A")
-    alphabet = list(string.ascii_uppercase)
+    alphabet = list(ascii_uppercase)
     for _ in range(3):
         for letter in alphabet:
             assert rotor.rotor_position() == letter
@@ -102,7 +92,7 @@ def test_plugboard_maximum_connections() -> None:
     with pytest.raises(
         InputException, match=r"Exceeds 13 maximum plugboard connections."
     ):
-        alphabet = string.ascii_uppercase
+        alphabet = ascii_uppercase
         Plugboard(list(zip(alphabet, reversed(alphabet))))
 
 
@@ -151,40 +141,87 @@ def test_m3_stepping_double() -> None:
     assert m3.rotor_positions() == ["Y", "F", "B"]
 
 
-def test_m3_transform_string_locked() -> None:
-    m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B", locked=True)
-    assert m3.transform_string("HELLO") == "EHPPK"
-
-
-def test_m3_transform_string_basic() -> None:
+def test_m3_initialisation() -> None:
     m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
-    assert m3.transform_string("HELLO") == "MFNCZ"
+    assert len(m3.rotors) == 3
+    assert m3.rotors[0].type == "I"
+    assert m3.rotors[1].type == "II"
+    assert m3.rotors[2].type == "III"
+    assert m3.reflector.type == "B"
+    assert m3.plugboard.map == {}
 
 
-def test_m3_transform_string_stepping_double() -> None:
-    m3 = M3(rotors=(("III", "U"), ("II", "D"), ("I", "A")), reflector="B")
-    assert m3.transform_string("HELLO") == "IBXXX"
-
-
-def test_m3_transform_string_long() -> None:
-    m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
-    input = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-    output = "ftzmgisxipjwgdnjjcoqtyrigdmxfiesrwzgtoiuiekkdcshtpyoepvxnhvrwwesfruxdgwozdmnkizwnczducobltuyhdzgovbuypkojwbowseemtzfwygkodtbzdqrczcifdidxcqzookviiomllegmsojxhnfhbofdzctzqpowvomqnwqquozufmsdxmjxiyzkozdewgedjxsmyhkjkriqxwbitwlyusthzqmgtxxwihdobtkcgzuvekyekyrewlywfmhlqjqjwcvtksnhzegwzkvexktdzxlchryjqqdzhyypzorygfkkkgufdcutkrjqgzwjdlmtyyigdoxoigqdwqgouyupewdwcingpdobrkxtjlkqjsrbimxvgzmebfzklowxuktdfnfnyyyowzyjworigokhhlngbpuyxfdcqlpxschhsljlsyfslcmmbknglvkwvqvdjgoiquuhqxokdpicpeycmhkokedzdtjvsyekpowmcrzgrvfwgfekewtpmztvbxmkiihhhmyxjnjvjillvqbxeqyhomtnzrfdbstekfirqhyoizdmbtsverbnhjpijoufljtnulrzzcbwswexnrhfgkjludpxzjiqtlnzfkylrugebhruksygqkprclkyqbpbhdvlosrzfbrungqydwsleymypsnrwmhyrglvruptfupucneomqhbecbnjxvzfsqmzbusefxwfcpliprqlkpmumkhvkboxbkunixhbhdvqgdpjgjcsc".upper()
-    assert m3.transform_string(input) == output
-    assert 1 == 1
+@pytest.mark.parametrize(
+    "settings,input,output",
+    [
+        (
+            {
+                "rotors": (("I", "A"), ("II", "A"), ("III", "A")),
+                "reflector": "B",
+                "locked": True,
+            },
+            "HELLO",
+            "EHPPK",
+        ),
+        (
+            {"rotors": (("I", "A"), ("II", "A"), ("III", "A")), "reflector": "B"},
+            "HELLO",
+            "MFNCZ",
+        ),
+        (
+            {"rotors": (("IV", "J"), ("V", "Y"), ("VIII", "Q")), "reflector": "C"},
+            "HELLO",
+            "ATXGN",
+        ),
+        (
+            {"rotors": (("III", "U"), ("II", "D"), ("I", "A")), "reflector": "B"},
+            "HELLO",
+            "IBXXX",
+        ),
+        (
+            {
+                "rotors": (("I", "A"), ("II", "A"), ("III", "A")),
+                "reflector": "B",
+                "locked": True,
+                "plugboard": {"H": "I", "E": "F", "L": "M", "O": "P"},
+            },
+            "HELLO",
+            "RBWWM",
+        ),
+        (
+            {
+                "rotors": (("III", "U"), ("II", "D"), ("I", "A")),
+                "reflector": "B",
+                "plugboard": {"H": "I", "E": "F", "L": "M", "O": "P"},
+            },
+            "HELLO",
+            "ITYJZ",
+        ),
+        (
+            {
+                "rotors": (("II", "W"), ("VII", "E"), ("VI", "H")),
+                "reflector": "C",
+                "plugboard": {
+                    "A": "B",
+                    "C": "D",
+                    "E": "F",
+                    "G": "H",
+                    "I": "K",
+                    "L": "P",
+                    "Z": "V",
+                },
+            },
+            "LOREMIPSUMDOLORSITAMETCONSECTETURADIPISCINGELIT",
+            "REMHWEVCZSZQBFELFWCDUYTXXGIXFNEWONKSLECFVRVXOED",
+        ),
+    ],
+)
+def test_m3_transform_string(settings, input, output) -> None:
+    assert M3(**settings).transform_string(input) == output
+    assert M3(**settings).transform_string(output) == input
 
 
 def test_m3_transform_invalid_character() -> None:
     with pytest.raises(InputException, match=r"Input must be between A-Z"):
         m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
         m3.transform_character("[")
-
-
-def test_m3_transform_string_locked_plugboard() -> None:
-    m3 = M3(
-        rotors=(("I", "A"), ("II", "A"), ("III", "A")),
-        reflector="B",
-        locked=True,
-        plugboard={"H": "I", "E": "F", "L": "M", "O": "P"},
-    )
-    assert m3.transform_string("HELLOB") == "RBWWME"

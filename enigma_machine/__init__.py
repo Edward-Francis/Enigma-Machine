@@ -20,6 +20,8 @@ class InputException(Exception):
 
 
 class Rotor:
+    """"""
+
     def __init__(self, __type, position):
         self.type = __type
         self.position = position
@@ -56,6 +58,8 @@ class Rotor:
 
 
 class Reflector(Rotor):
+    """"""
+
     def __init__(self, __type):
         self.type = __type
         self.wiring = list(REFLECTORS[self.type])
@@ -63,6 +67,8 @@ class Reflector(Rotor):
 
 
 class Plugboard:
+    """"""
+
     def __init__(self, _map={}) -> None:
         used_characters = []
 
@@ -87,6 +93,8 @@ class Plugboard:
 
 
 class M3:
+    """"""
+
     def __init__(self, *args, **kwargs) -> None:
         self.reflector = Reflector(kwargs["reflector"])
         self.rotors = [Rotor(*r) for r in kwargs["rotors"]]
