@@ -22,9 +22,10 @@ class InputException(Exception):
 class Rotor:
     """"""
 
-    def __init__(self, __type, position):
+    def __init__(self, __type, position, ring=0):
         self.type = __type
         self.position = position
+        self.ring = ring
         wiring, turnovers = WHEELS[self.type]
         self.alphabet = list(ascii_uppercase)
         self.wiring = list(wiring)

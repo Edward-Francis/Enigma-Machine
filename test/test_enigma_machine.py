@@ -7,17 +7,18 @@ from enigma_machine import M3, REFLECTORS, InputException, Plugboard, Reflector,
 
 
 @pytest.mark.parametrize(
-    "type,position,first,last",
+    "type,position,ring,first,last",
     [
-        ("I", "A", "E", "J"),
-        ("I", "X", "R", "B"),
-        ("II", "R", "G", "Q"),
-        ("VII", "F", "R", "G"),
+        ("I", "A", 0, "E", "J"),
+        ("I", "X", 0, "R", "B"),
+        ("II", "R", 0, "G", "Q"),
+        ("VII", "F", 0, "R", "G"),
     ],
 )
-def test_rotor_initialisation(type, position, first, last) -> None:
-    rotor = Rotor(type, position)
+def test_rotor_initialisation(type, position, ring, first, last) -> None:
+    rotor = Rotor(type, position, ring)
     assert rotor.type == type
+    assert rotor.ring == ring
     assert rotor.turnovers == list(enigma_machine.WHEELS[type][1])
     assert rotor.wiring[0] == first
     assert rotor.wiring[-1] == last
