@@ -22,10 +22,10 @@ class InputException(Exception):
 class Rotor:
     """"""
 
-    def __init__(self, __type, position, ring=0):
+    def __init__(self, __type, position, ring=1):
         self.type = __type
         self.position = position
-        self.ring = ring
+        self.ring = ring - 1
         wiring, turnovers = WHEELS[self.type]
         self.alphabet = list(ascii_uppercase)
         self.wiring = list(wiring)
@@ -34,6 +34,14 @@ class Rotor:
         self.count = offset
         self.alphabet = self.alphabet[offset:] + self.alphabet[:offset]
         self.wiring = self.wiring[offset:] + self.wiring[:offset]
+
+        dot = self.wiring.index(self.position)
+        for i in range(self.ring):
+            dot = dot + 1
+            for index, c in enumerate(self.wiring):
+                self.wiring[index] = chr(((ord(c) - 64) % 26) + 65)
+        ring_offset = self.ring * -1
+        self.wiring = self.wiring[ring_offset:] + self.wiring[:ring_offset]
 
     def step(self, offset=1) -> None:
         """Moves rotors to new position."""

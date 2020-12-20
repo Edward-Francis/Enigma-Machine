@@ -9,16 +9,20 @@ from enigma_machine import M3, REFLECTORS, InputException, Plugboard, Reflector,
 @pytest.mark.parametrize(
     "type,position,ring,first,last",
     [
-        ("I", "A", 0, "E", "J"),
-        ("I", "X", 0, "R", "B"),
-        ("II", "R", 0, "G", "Q"),
-        ("VII", "F", 0, "R", "G"),
+        ("I", "A", 1, "E", "J"),
+        ("I", "X", 1, "R", "B"),
+        ("II", "R", 1, "G", "Q"),
+        ("VII", "F", 1, "R", "G"),
+        ("I", "A", 3, "E", "T"),
+        ("I", "A", 2, "K", "D"),
+        ("I", "O", 15, "S", "X"),
+        ("I", "Z", 26, "D", "I"),
     ],
 )
 def test_rotor_initialisation(type, position, ring, first, last) -> None:
     rotor = Rotor(type, position, ring)
     assert rotor.type == type
-    assert rotor.ring == ring
+    assert rotor.ring == ring - 1
     assert rotor.turnovers == list(enigma_machine.WHEELS[type][1])
     assert rotor.wiring[0] == first
     assert rotor.wiring[-1] == last
@@ -214,6 +218,22 @@ def test_m3_initialisation() -> None:
             },
             "LOREMIPSUMDOLORSITAMETCONSECTETURADIPISCINGELIT",
             "REMHWEVCZSZQBFELFWCDUYTXXGIXFNEWONKSLECFVRVXOED",
+        ),
+        (
+            {
+                "rotors": (("I", "A", 3), ("II", "A", 15), ("III", "A", 26)),
+                "reflector": "B",
+            },
+            "HELLO",
+            "IGTGM",
+        ),
+        (
+            {
+                "rotors": (("VII", "J", 11), ("V", "H", 16), ("II", "G", 3)),
+                "reflector": "C",
+            },
+            "HELLO",
+            "PUAUB",
         ),
     ],
 )
