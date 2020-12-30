@@ -16,13 +16,15 @@ REFLECTORS = {"B": "YRUHQSLDPXNGOKMIEBFZCWVJAT", "C": "FVPJIAOYEDRZXWGCTKUQSBNMH
 
 
 class InputException(Exception):
+    """Exception representing Enigma configuration failure."""
+
     pass
 
 
 class Rotor:
-    """"""
+    """Module representing Enigma rotor mechanism."""
 
-    def __init__(self, __type, position, ring=1):
+    def __init__(self, __type: str, position: str, ring: int = 1):
         self.type = __type
         self.position = position
         self.ring = ring - 1
@@ -43,31 +45,31 @@ class Rotor:
         ring_offset = self.ring * -1
         self.wiring = self.wiring[ring_offset:] + self.wiring[:ring_offset]
 
-    def step(self, offset=1) -> None:
-        """Moves rotors to new position."""
-        self.alphabet = self.alphabet[offset:] + [self.alphabet[0]]
-        self.wiring = self.wiring[offset:] + [self.wiring[0]]
-        self.count = self.count + offset
+    def step(self) -> None:
+        """Rotates the rotor position forward by one."""
+        self.alphabet = self.alphabet[1:] + [self.alphabet[0]]
+        self.wiring = self.wiring[1:] + [self.wiring[0]]
+        self.count = self.count + 1
         if self.count > 25:
             self.count = 0
 
     def rotor_position(self) -> str:
-        """Returns the rotor's current position."""
+        """Function returns the character of the rotor current position."""
         return chr(self.count + 65)
 
-    def forward(self, char, offset) -> Tuple[str, int]:
-        """Calculates and returns the transposed character moving forwards."""
+    def forward(self, char: str, offset: int) -> Tuple[str, int]:
+        """Function for rotor traversal in the forward direction."""
         return (self.wiring[ord(char) - 65 - offset], self.count)
 
-    def reverse(self, char, offset) -> Tuple[str, int]:
-        """Calculates and returns the transposed character moving backwards."""
+    def reverse(self, char: str, offset: int) -> Tuple[str, int]:
+        """Function for rotor traversal in the backwards direction."""
         position = self.alphabet[ord(char) - 65 - offset]
         char = self.alphabet[self.wiring.index(position)]
         return char, self.count
 
 
 class Reflector(Rotor):
-    """"""
+    """Module representing Enigma reflector mechanism."""
 
     def __init__(self, __type):
         self.type = __type
@@ -76,7 +78,7 @@ class Reflector(Rotor):
 
 
 class Plugboard:
-    """"""
+    """Module representing Enigma plugboard mechanism."""
 
     def __init__(self, _map={}) -> None:
         used_characters = []
@@ -102,7 +104,7 @@ class Plugboard:
 
 
 class M3:
-    """"""
+    """Module representing Enigma Machine Type M3."""
 
     def __init__(self, *args, **kwargs) -> None:
         self.reflector = Reflector(kwargs["reflector"])
