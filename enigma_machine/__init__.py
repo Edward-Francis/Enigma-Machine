@@ -10,9 +10,16 @@ WHEELS = {
     "VI": ("JPGVOUMFYQBENHZRDKASXLICTW", "ZM"),
     "VII": ("NZJHGRCXMYSWBOUFAIVLPEKQDT", "ZM"),
     "VIII": ("FKQHTLXOCBJSPDZRAMEWNIUYGV", "ZM"),
+    "Beta": ("LEYJVCNIXWPBQMDRTAKZGFUHOS", ""),
+    "Gamma": ("FSOKANUERHMBTIYCWLQPZXVGJD", ""),
 }
 
-REFLECTORS = {"B": "YRUHQSLDPXNGOKMIEBFZCWVJAT", "C": "FVPJIAOYEDRZXWGCTKUQSBNMHL"}
+REFLECTORS = {
+    "B": "YRUHQSLDPXNGOKMIEBFZCWVJAT",
+    "C": "FVPJIAOYEDRZXWGCTKUQSBNMHL",
+    "B-Thin": "ENKQAUYWJICOPBLMDXZVFTHRGS",
+    "C-Thin": "RDOBJNTKVEHMLFCWZAXGYIPSUQ",
+}
 
 
 class InputException(Exception):
@@ -129,7 +136,7 @@ class M3:
         char = self.plugboard.map_character(char)
 
         if not self.locked:
-            r1, r2, r3 = self.rotors
+            r1, r2, r3, *_ = self.rotors
             r1.step()
             if chr(r1.count + 64) in r1.turnovers:
                 r2.step()
@@ -146,3 +153,9 @@ class M3:
 
         char = chr((ord(char) - 65 - offset) % 26 + 65)
         return self.plugboard.map_character(char)
+
+
+class M4(M3):
+    """Module representing Enigma Machine Type M4."""
+
+    pass

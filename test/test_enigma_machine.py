@@ -3,7 +3,15 @@ from string import ascii_uppercase
 import pytest
 
 import enigma_machine
-from enigma_machine import M3, REFLECTORS, InputException, Plugboard, Reflector, Rotor
+from enigma_machine import (
+    M3,
+    M4,
+    REFLECTORS,
+    InputException,
+    Plugboard,
+    Reflector,
+    Rotor,
+)
 
 
 @pytest.mark.parametrize(
@@ -246,3 +254,108 @@ def test_m3_transform_invalid_character() -> None:
     with pytest.raises(InputException, match=r"Input must be between A-Z"):
         m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
         m3.transform_character("[")
+
+
+@pytest.mark.parametrize(
+    "settings,input,output",
+    [
+        (
+            {
+                "rotors": (("I", "A"), ("II", "A"), ("III", "A"), ("Beta", "A")),
+                "reflector": "B-Thin",
+                "locked": True,
+            },
+            "HELLO",
+            "EHPPK",
+        ),
+        (
+            {
+                "rotors": (("I", "A"), ("II", "A"), ("III", "A"), ("Beta", "A")),
+                "reflector": "B-Thin",
+            },
+            "HELLO",
+            "MFNCZ",
+        ),
+        (
+            {
+                "rotors": (("IV", "J"), ("V", "Y"), ("VIII", "Q"), ("Beta", "X")),
+                "reflector": "C-Thin",
+            },
+            "HELLO",
+            "IDWBT",
+        ),
+        (
+            {
+                "rotors": (("III", "U"), ("II", "D"), ("I", "A"), ("Gamma", "F")),
+                "reflector": "C-Thin",
+            },
+            "HELLO",
+            "DHTBB",
+        ),
+        (
+            {
+                "rotors": (("I", "A"), ("II", "A"), ("III", "A"), ("Gamma", "L")),
+                "reflector": "B-Thin",
+                "locked": True,
+                "plugboard": {"H": "I", "E": "F", "L": "M", "O": "P"},
+            },
+            "HELLO",
+            "PQZZW",
+        ),
+        (
+            {
+                "rotors": (("I", "A"), ("II", "A"), ("III", "A"), ("Gamma", "L")),
+                "reflector": "B-Thin",
+                "plugboard": {"H": "I", "E": "F", "L": "M", "O": "P"},
+            },
+            "HELLO",
+            "LCHMB",
+        ),
+        (
+            {
+                "rotors": (("II", "W"), ("VII", "E"), ("VI", "H"), ("Beta", "E")),
+                "reflector": "B-Thin",
+                "plugboard": {
+                    "A": "B",
+                    "C": "D",
+                    "E": "F",
+                    "G": "H",
+                    "I": "K",
+                    "L": "P",
+                    "Z": "V",
+                },
+            },
+            "LOREMIPSUMDOLORSITAMETCONSECTETURADIPISCINGELIT",
+            "YGNFBLNYRSUBOZNTFLNZNDDUVIQGWNOEDPKEUNOWEMJRTQV",
+        ),
+        (
+            {
+                "rotors": (
+                    ("I", "A", 3),
+                    ("II", "A", 15),
+                    ("III", "A", 26),
+                    ("Beta", "E", 8),
+                ),
+                "reflector": "B-Thin",
+            },
+            "HELLO",
+            "LOHRZ",
+        ),
+        (
+            {
+                "rotors": (
+                    ("VII", "J", 11),
+                    ("V", "H", 16),
+                    ("II", "G", 3),
+                    ("Gamma", "T", 16),
+                ),
+                "reflector": "C-Thin",
+            },
+            "HELLO",
+            "BNCJC",
+        ),
+    ],
+)
+def test_m4_transform_string(settings, input, output) -> None:
+    assert M4(**settings).transform_string(input) == output
+    assert M4(**settings).transform_string(output) == input
