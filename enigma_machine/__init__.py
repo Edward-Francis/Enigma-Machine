@@ -130,6 +130,11 @@ class M3:
     def transform_character(self, char: str) -> str:
         """Returns the enigma encoded character."""
 
+        char = char.upper()
+
+        if char.isspace():
+            return ""
+
         if char not in ascii_uppercase:
             raise InputException("Input must be between A-Z")
 

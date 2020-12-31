@@ -256,6 +256,11 @@ def test_m3_transform_invalid_character() -> None:
         m3.transform_character("[")
 
 
+def test_m3_transform_spaces_ignored() -> None:
+    m3 = M3(rotors=(("I", "A"), ("II", "A"), ("III", "A")), reflector="B")
+    assert m3.transform_string("Hello World") == "MFNCZBBFZM"
+
+
 @pytest.mark.parametrize(
     "settings,input,output",
     [
